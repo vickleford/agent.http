@@ -22,6 +22,7 @@ import requests
 import argparse
 import json
 import logging
+import re
 from sys import exit
 
 
@@ -40,8 +41,10 @@ parser.add_argument('-I', '--head', action='store_true',
                     header of a document.')
 parser.add_argument('--no-redirect', action='store_false',
                     help='Disallow following redirects')  # backward by design
-parser.add_argument('URL', 
-                    help='The URL to connect to')
+parser.add_argument('-m', '--match', default='',
+                    help='Specify a regular expression to match from the \
+                    response body')
+parser.add_argument('URL', help='The URL to connect to')
 args = parser.parse_args()
 
 
@@ -50,7 +53,7 @@ def gen_headers(argheader):
     '''Return a dictionary requests can use to send headers with.
     In other words, translate from argparse to requests lib.
     
-    argheader comes from args as [['h1: list'], ['h2: of'], ['h3: lists']].
+    argheader comes from args as [['h1: list'], ['h2: of'], ['h3: lists']].00000
     '''
     
     headers = {}
@@ -105,6 +108,17 @@ def do_request(url, **kwargs):
     return r
 
 
+def does_match(pattern, string):
+    '''Return a matched string if regex pattern is found in string.'''
+    
+    m = re.search(pattern, string)
+    
+    if m and pattern != '':
+        return m.group(0)
+    else:
+        return "NONE"
+
+
 def print_results(req):
     '''Print the results from a request object into MaaS-like agent plugin 
     formatting.'''
@@ -116,6 +130,8 @@ def print_results(req):
     print(line.format("bytes", "uint32", len(req.text)))
     print(line.format("duration", "double", 
                       req.elapsed.total_seconds() * 1000))
+    print(line.format("match", "string", 
+                      does_match(args.match, req.text)))
 
 
 def spawn():

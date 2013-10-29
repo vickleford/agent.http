@@ -13,3 +13,4 @@ that way we don't have to screw with firewalls and NATs for the most part
 | code   | Response code | string |
 | bytes  | Length of response.text | uint32 |
 | duration | Count of milliseconds the check took to complete | double |
+| match | The string representing the body match specified | string |
