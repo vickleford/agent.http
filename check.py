@@ -44,6 +44,8 @@ parser.add_argument('--no-redirect', action='store_false',
 parser.add_argument('-m', '--match', default='',
                     help='Specify a regular expression to match from the \
                     response body')
+parser.add_argument('-k', '--insecure', action='store_false',
+                    help='Disable SSL certificate verification')
 parser.add_argument('URL', help='The URL to connect to')
 args = parser.parse_args()
 
@@ -87,6 +89,7 @@ def do_request(url, **kwargs):
     data: data to POST with
     head: true or false to do a HEAD with
     redirects: true to allow redirects, false to disallow
+    insecure: true to disable ssl certificate verify
     '''
 
     h = kwargs.get('headers', {})
@@ -95,15 +98,18 @@ def do_request(url, **kwargs):
         r = requests.post(url, 
                           data=json.dumps(kwargs.get('data', {})),
                           headers=h,
-                          allow_redirects=kwargs.get('redirects'))
+                          allow_redirects=kwargs.get('redirects'),
+                          verify=kwargs.get('insecure'))
     elif kwargs.get('head'):
         r = requests.head(url, 
                           headers=h,
-                          allow_redirects=kwargs.get('redirects'))
+                          allow_redirects=kwargs.get('redirects'),
+                          verify=kwargs.get('insecure'))
     else:
         r = requests.get(url, 
                          headers=h,
-                         allow_redirects=kwargs.get('redirects'))
+                         allow_redirects=kwargs.get('redirects'),
+                         verify=kwargs.get('insecure'))
         
     return r
 
@@ -140,7 +146,8 @@ def spawn():
         'headers': args.header,
         'data': args.data,
         'head': args.head,
-        'redirects': args.no_redirect
+        'redirects': args.no_redirect,
+        'insecure': args.insecure
     }
     
     try:

@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 
 setup(name='agent.http',
-      version='0.1',
+      version='0.2',
       description='Rackspace Monitoring agent.plugin HTTP check',
       author='Vic Watkins',
       author_email='vic.watkins@rackspace.com',
