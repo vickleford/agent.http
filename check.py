@@ -135,7 +135,7 @@ def print_results(req):
     print(line.format("code", "string", req.status_code))
     print(line.format("bytes", "uint32", len(req.text)))
     print(line.format("duration", "double", 
-                      req.elapsed.total_seconds() * 1000))
+                      req.elapsed.microseconds / 100))
     print(line.format("match", "string", 
                       does_match(args.match, req.text)))
 
